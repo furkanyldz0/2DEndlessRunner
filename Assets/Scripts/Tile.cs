@@ -1,11 +1,13 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Tile : MonoBehaviour
 {
     private Rigidbody2D rb;
-    public float speed;
-
-    public float destroyPosition;
+    private float speed;
+    private float destroyPosition;
+    private Vector2 defaultSpeed;
+    private static bool IsGameStarted;
 
     void Start()
     {
@@ -13,8 +15,10 @@ public class Tile : MonoBehaviour
         destroyPosition = -50;
 
         rb = GetComponent<Rigidbody2D>();
-        rb.linearVelocity = speed * Vector2.left;
-        
+        defaultSpeed = speed * Vector2.left;
+
+        if (IsGameStarted)
+            rb.linearVelocity = defaultSpeed;
     }
 
     void Update()
@@ -24,5 +28,28 @@ public class Tile : MonoBehaviour
             Destroy(gameObject);
             //Debug.Log(transform.position.x);
         }
+
+        //if (Keyboard.current.anyKey.wasPressedThisFrame)
+        //{
+        //    StartGame(); ///
+        //}
+
+    }
+
+    public void StartPlatform()
+    {
+        rb.linearVelocity = defaultSpeed;
+        IsGameStarted = true;
+    }
+
+    public void StopPlatform()
+    {
+        rb.linearVelocity = Vector2.zero;
+        IsGameStarted = false;
+    }
+
+    public static void StopPlatforms()
+    {
+        IsGameStarted = false;
     }
 }

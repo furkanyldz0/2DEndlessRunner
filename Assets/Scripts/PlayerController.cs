@@ -1,3 +1,5 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -20,16 +22,20 @@ public class PlayerController : MonoBehaviour
     private float jumpBufferTime = 0.2f;
     private float jumpBufferCounter;
 
+    public GameDirector gameDirector;
+    private bool isIdle;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         jumpingPower = 15;
-        TriggerRunAnimation();
+        //TriggerRunAnimation();
 
         defaultGravityScale = 4.3f;
         fallingGravityScale = 5;
         jumpingGravityScale = 2.7f;
         rb.gravityScale = defaultGravityScale;
+
     }
 
     private void OnCollisionEnter2D(Collision2D col)
@@ -55,7 +61,12 @@ public class PlayerController : MonoBehaviour
     }
 
     void FixedUpdate()
-    { 
+    {
+        if (!gameDirector.levelManager.isPlayerMoving)
+        {
+            return;
+        }
+
         rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
 
         jumpBufferCounter -= Time.fixedDeltaTime;
@@ -112,6 +123,10 @@ public class PlayerController : MonoBehaviour
             DestroyPlayer();
         }
 
+        if (transform.position.x < -25)
+        {
+            DestroyPlayer();
+        }
     }
 
 
@@ -136,7 +151,11 @@ public class PlayerController : MonoBehaviour
 
     private void DestroyPlayer()
     {
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        //gameDirector.levelManager.StopPlayer();
+        gameDirector.levelManager.StopGame(); //artýk playerin update'i çalýþmayacak
+        TriggerDeathAnimation();
+        rb.bodyType = RigidbodyType2D.Static; //öldükten sonra hareket olmasýn
         Debug.Log("Game Over");
     }
 
@@ -148,6 +167,13 @@ public class PlayerController : MonoBehaviour
     private void TriggerJumpAnimation()
     {
         animator.SetBool("isJumping", true);
+        animator.SetBool("isRunning", false);
+    }
+
+    private void TriggerDeathAnimation()
+    {
+        animator.SetBool("isDied", true);
+        animator.SetBool("isJumping", false);
         animator.SetBool("isRunning", false);
     }
 

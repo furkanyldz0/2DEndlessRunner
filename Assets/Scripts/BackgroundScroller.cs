@@ -7,6 +7,8 @@ public class BackgroundScroller : MonoBehaviour
     private float offset;
     private Material mat;
 
+    public LevelManager levelManager;
+
     void Start()
     {
         mat = GetComponent<Renderer>().material;
@@ -15,6 +17,11 @@ public class BackgroundScroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!levelManager.isPlayerMoving) //gamedirectordan da alabilirdik
+        {
+            return;
+        }
+
         offset += (Time.deltaTime * scrollSpeed) / 10f;
         mat.SetTextureOffset("_MainTex", new Vector2(offset, 0));
     }
