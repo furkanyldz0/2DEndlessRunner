@@ -10,6 +10,8 @@ public class LevelManager : MonoBehaviour
     private float meterScore;
     public bool isPlayerMoving; //background and playeridle
 
+    [SerializeField]
+    private FlashEffectManager flashEffectManager;
 
     private void Start()
     {
@@ -44,6 +46,7 @@ public class LevelManager : MonoBehaviour
 
     public void StopGame()
     {
+        flashEffectManager.MakeFlash();
         isPlayerMoving = false;
         var tiles = FindObjectsByType<Tile>(FindObjectsSortMode.None);
         foreach (var t in tiles)

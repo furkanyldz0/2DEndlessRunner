@@ -23,12 +23,18 @@ public class PlayerController : MonoBehaviour
     private float jumpBufferCounter;
 
     public GameDirector gameDirector;
-    private bool isIdle;
+
+    private float defaultPositionX;
+    private float positionTime = 4f;
+    private float positionTimeCounter;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         jumpingPower = 15;
+
+        defaultPositionX = transform.position.x;
+        positionTimeCounter = positionTime;
         //TriggerRunAnimation();
 
         defaultGravityScale = 4.3f;
@@ -44,6 +50,7 @@ public class PlayerController : MonoBehaviour
         {
             DestroyPlayer();
         }
+
     }
 
     void Update()
@@ -56,7 +63,7 @@ public class PlayerController : MonoBehaviour
         //jumpbuffer space tuþu kontrolü yerine geçiyor, karakterin yere deðmeden zýplamasýný saðlýyor
         if (isJumpPressed)
             jumpBufferCounter = jumpBufferTime;  //eðer havadayken space tuþuna basýlý tutursa deðeri baþlatýr, karakter yere iner inmez zýplar
-        
+
 
     }
 
@@ -66,6 +73,38 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+
+        //if (rb.linearVelocity.x > 0.2f || rb.linearVelocity.x < -0.2f)
+        //{
+        //    positionTimeCounter = positionTime;  sürekli ileri atýlýnca köstek oluyor, hep yapmasa daha ii
+        //    Debug.Log(rb.linearVelocity.x);
+        //}
+
+        if (transform.position.x <= defaultPositionX - 5f)
+        {                                                                       
+            positionTimeCounter -= Time.fixedDeltaTime;  //start'da tanýmladýk sýkýntý yok
+        }
+
+        if (positionTimeCounter <= 0f)
+        {
+            DisableColliders();
+            rb.MovePosition(new Vector2(transform.position.x + 0.2f, transform.position.y + 0.1f));
+            TriggerJumpAnimation();
+
+            Debug.Log("Repositioning");
+
+            if (transform.position.x >= defaultPositionX)
+            {
+                positionTimeCounter = positionTime;
+                rb.linearVelocity = new Vector2(0, 0);
+                EnableColliders();
+                Debug.Log("Start point X");
+            }
+        }
+
+
+
+
 
         rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
 
@@ -84,14 +123,14 @@ public class PlayerController : MonoBehaviour
         }
 
 
-        if(coyoteTimeCounter > 0f && !isJumping) //yere deðdiðinde double jump sýfýrlansýn
+        if (coyoteTimeCounter > 0f && !isJumping) //yere deðdiðinde double jump sýfýrlansýn
         {
             isDoubleJumpAvailable = false;
         }
 
         if (jumpBufferCounter > 0f) //isground, getbuttondown
         {
-            if(coyoteTimeCounter > 0f || isDoubleJumpAvailable)
+            if (coyoteTimeCounter > 0f || isDoubleJumpAvailable)
             {
                 Jump();
                 isDoubleJumpAvailable = !isDoubleJumpAvailable;
@@ -129,22 +168,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     bool isGrounded()
     {
         return Physics2D.OverlapCapsule(groundCheck.position, new Vector2(0.55f, 0.15f)
-            ,CapsuleDirection2D.Horizontal, 0, groundLayer);
+            , CapsuleDirection2D.Horizontal, 0, groundLayer);
     }
 
     void Jump()
     {
         rb.gravityScale = defaultGravityScale;
 
-        if(rb.linearVelocity.y <= 0)
+        if (rb.linearVelocity.y <= 0)
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpingPower);
-        else if(rb.linearVelocity.y > 0)
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpingPower + rb.linearVelocity.y/3f);
-            //Burayla oyna    
+        else if (rb.linearVelocity.y > 0)
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpingPower + rb.linearVelocity.y / 3f);
+        //Burayla oyna    
 
         TriggerJumpAnimation();
     }
@@ -157,6 +195,18 @@ public class PlayerController : MonoBehaviour
         TriggerDeathAnimation();
         rb.bodyType = RigidbodyType2D.Static; //öldükten sonra hareket olmasýn
         Debug.Log("Game Over");
+    }
+
+    private void EnableColliders()
+    {
+        GetComponent<BoxCollider2D>().enabled = true;
+        GetComponent<CircleCollider2D>().enabled = true;
+    }
+
+    private void DisableColliders()
+    {
+        GetComponent<BoxCollider2D>().enabled = false;
+        GetComponent<CircleCollider2D>().enabled = false;
     }
 
     private void TriggerRunAnimation()

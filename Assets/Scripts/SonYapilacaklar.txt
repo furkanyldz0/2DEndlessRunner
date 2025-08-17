@@ -1,3 +1,6 @@
 1.idle ve ölüm anýnda ekranda yazý olacak
 2.ses ve müzik eklenecek
-3.öldüðünde hafif flash efekti
+
+
+ok-.öldüðünde hafif flash efekti
+ok-karakter yerinden oynadýðýnda bir süre geçtikten sonra eski konumuna dönsün ()
