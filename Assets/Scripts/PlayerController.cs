@@ -28,6 +28,12 @@ public class PlayerController : MonoBehaviour
     private float positionTime = 4f;
     private float positionTimeCounter;
 
+    AudioManager audioManager;
+
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -48,6 +54,7 @@ public class PlayerController : MonoBehaviour
     {
         if (col.collider.CompareTag("Spike"))
         {
+            audioManager.PlaySFX(audioManager.takeHit);
             DestroyPlayer();
         }
 
@@ -63,7 +70,6 @@ public class PlayerController : MonoBehaviour
         //jumpbuffer space tuþu kontrolü yerine geçiyor, karakterin yere deðmeden zýplamasýný saðlýyor
         if (isJumpPressed)
             jumpBufferCounter = jumpBufferTime;  //eðer havadayken space tuþuna basýlý tutursa deðeri baþlatýr, karakter yere iner inmez zýplar
-
 
     }
 
@@ -101,9 +107,6 @@ public class PlayerController : MonoBehaviour
                 Debug.Log("Start point X");
             }
         }
-
-
-
 
 
         rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
@@ -180,9 +183,14 @@ public class PlayerController : MonoBehaviour
 
         if (rb.linearVelocity.y <= 0)
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpingPower);
+            
         else if (rb.linearVelocity.y > 0)
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpingPower + rb.linearVelocity.y / 3f);
-        //Burayla oyna    
+
+        if (isDoubleJumpAvailable)
+            audioManager.PlaySFX(audioManager.doubleJump);
+        else
+            audioManager.PlaySFX(audioManager.jump);
 
         TriggerJumpAnimation();
     }
@@ -191,6 +199,7 @@ public class PlayerController : MonoBehaviour
     {
         //Destroy(gameObject);
         //gameDirector.levelManager.StopPlayer();
+        audioManager.PlaySFX(audioManager.die);
         gameDirector.levelManager.StopGame(); //artýk playerin update'i çalýþmayacak
         TriggerDeathAnimation();
         rb.bodyType = RigidbodyType2D.Static; //öldükten sonra hareket olmasýn

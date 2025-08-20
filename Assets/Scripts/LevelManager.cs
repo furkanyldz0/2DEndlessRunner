@@ -13,6 +13,13 @@ public class LevelManager : MonoBehaviour
     [SerializeField]
     private FlashEffectManager flashEffectManager;
 
+    AudioManager audioManager;
+
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
+
     private void Start()
     {
         meterScore = 0;
@@ -37,6 +44,7 @@ public class LevelManager : MonoBehaviour
     public void StartGame()
     {
         isPlayerMoving = true;
+        audioManager.PlayRandomMusic();
         var tiles = FindObjectsByType<Tile>(FindObjectsSortMode.None);
         foreach (var t in tiles)
         {
@@ -46,6 +54,7 @@ public class LevelManager : MonoBehaviour
 
     public void StopGame()
     {
+        audioManager.StopMusic();
         flashEffectManager.MakeFlash();
         isPlayerMoving = false;
         var tiles = FindObjectsByType<Tile>(FindObjectsSortMode.None);
