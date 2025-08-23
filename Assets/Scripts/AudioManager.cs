@@ -14,12 +14,22 @@ public class AudioManager : MonoBehaviour
     public AudioClip doubleJump;
     public AudioClip takeHit;
     public AudioClip die;
+
+    public LevelManager levelManager;
+
     void Start()
     {
         //musicSource.clip = tracks[Random.Range(0, tracks.Length)];
         //musicSource.Play();
     }
 
+    private void Update()
+    {
+        if (levelManager.isPlayerMoving && !musicSource.isPlaying)
+        {
+            PlayRandomMusic();
+        }
+    }
 
     public void PlaySFX(AudioClip clip)
     {

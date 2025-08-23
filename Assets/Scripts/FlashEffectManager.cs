@@ -3,10 +3,8 @@ using UnityEngine.UI;
 
 public class FlashEffectManager : MonoBehaviour
 {
-    
     private Image flashImage;
     private Color col;
-
     private bool isFlashing;
 
     void Start()
@@ -25,7 +23,6 @@ public class FlashEffectManager : MonoBehaviour
             flashImage.color = col;
             if(col.a <= 0f)
                 isFlashing = false;
-            
         }
     }
 

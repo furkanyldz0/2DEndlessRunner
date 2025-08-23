@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
@@ -12,6 +11,8 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField]
     private FlashEffectManager flashEffectManager;
+    [SerializeField]
+    private TextFadeManager textFadeManager;
 
     AudioManager audioManager;
 
@@ -37,14 +38,13 @@ public class LevelManager : MonoBehaviour
             meterScore += Time.fixedDeltaTime * 8;
             meterScoreText.SetText(Mathf.RoundToInt(meterScore).ToString());
         }
-
-        
     }
 
     public void StartGame()
     {
+        textFadeManager.startText.gameObject.SetActive(false);
         isPlayerMoving = true;
-        audioManager.PlayRandomMusic();
+        //audioManager.PlayRandomMusic();
         var tiles = FindObjectsByType<Tile>(FindObjectsSortMode.None);
         foreach (var t in tiles)
         {
@@ -55,6 +55,7 @@ public class LevelManager : MonoBehaviour
     public void StopGame()
     {
         audioManager.StopMusic();
+        textFadeManager.SetRestartTextActive();
         flashEffectManager.MakeFlash();
         isPlayerMoving = false;
         var tiles = FindObjectsByType<Tile>(FindObjectsSortMode.None);

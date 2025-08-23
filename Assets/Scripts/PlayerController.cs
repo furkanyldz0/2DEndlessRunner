@@ -1,5 +1,3 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -8,8 +6,7 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
 
     public float jumpingPower;
-    private bool isJumpPressed, isJumpReleased, isJumping, isDoubleJumpAvailable;
-    private float airTime;
+    private bool isJumpPressed, isJumping, isDoubleJumpAvailable;
 
     public Transform groundCheck;
     public LayerMask groundLayer;
@@ -65,7 +62,6 @@ public class PlayerController : MonoBehaviour
         //isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.3f, groundLayer);
         isJumpPressed = Input.GetButtonDown("Jump");
         isJumping = Input.GetButton("Jump");
-        isJumpReleased = Input.GetButtonUp("Jump");
 
         //jumpbuffer space tuþu kontrolü yerine geçiyor, karakterin yere deðmeden zýplamasýný saðlýyor
         if (isJumpPressed)
@@ -97,14 +93,14 @@ public class PlayerController : MonoBehaviour
             rb.MovePosition(new Vector2(transform.position.x + 0.2f, transform.position.y + 0.1f));
             TriggerJumpAnimation();
 
-            Debug.Log("Repositioning");
+            //Debug.Log("Repositioning");
 
             if (transform.position.x >= defaultPositionX)
             {
                 positionTimeCounter = positionTime;
                 rb.linearVelocity = new Vector2(0, 0);
                 EnableColliders();
-                Debug.Log("Start point X");
+                //Debug.Log("Start point X");
             }
         }
 
@@ -128,7 +124,7 @@ public class PlayerController : MonoBehaviour
 
         if (coyoteTimeCounter > 0f && !isJumping) //yere deðdiðinde double jump sýfýrlansýn
         {
-            isDoubleJumpAvailable = false;
+            isDoubleJumpAvailable = false; //eðer zýplamada çift zýplamayý kullanmazsak bu true kalacak, sonraki zýplamalarda çakýþabilir
         }
 
         if (jumpBufferCounter > 0f) //isground, getbuttondown
@@ -173,8 +169,8 @@ public class PlayerController : MonoBehaviour
 
     bool isGrounded()
     {
-        return Physics2D.OverlapCapsule(groundCheck.position, new Vector2(0.55f, 0.15f)
-            , CapsuleDirection2D.Horizontal, 0, groundLayer);
+        return Physics2D.OverlapCapsule(groundCheck.position, new Vector2(0.55f, 0.15f) 
+            ,CapsuleDirection2D.Horizontal, 0, groundLayer);
     }
 
     void Jump()
@@ -236,25 +232,4 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("isRunning", false);
     }
 
-
-    //if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f) //isground, getbuttondown
-    //{
-    //    rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpingPower);
-
-    //    jumpBufferCounter = 0f;
-    //}
-    //if(isJumpReleased && rb.linearVelocity.y > 0f)
-    //{
-    //    rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
-
-    //    coyoteTimeCounter = 0f; //uzun zýplama yapmasýný istiyorsak coyotetime'ý burada sýfýrlamalýyýz, yukarýda
-    //                            //sýfýrlanýrsa uzun zýplama olmaz hemen aþaðý çakýlýr(maz, space tuþundan çekildiði
-    //                            //zaman bu if'e giriyor
-    //}
-
-
-    //if (isJumpReleased && rb.linearVelocity.y > 0f)
-    //{
-    //    rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
-    //}
 }

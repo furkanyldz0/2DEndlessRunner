@@ -1,2 +1,0 @@
-1.idle ve ölüm anýnda ekranda yazý olacak
-2.ses ve müzik eklenecek (her müzik sonu baþka bir tanesini baþlatsýn)

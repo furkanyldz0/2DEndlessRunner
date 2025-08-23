@@ -1,7 +1,4 @@
 using UnityEngine;
-using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
-using static UnityEngine.UI.Image;
 
 public class TileSpawner : MonoBehaviour
 {
@@ -23,12 +20,12 @@ public class TileSpawner : MonoBehaviour
     
     void Update()
     {
-        if(spawnPointX - currentTileRightEdgeX > 4) //currentTile.transform.position.x platformun en sað noktasý
+        if(spawnPointX - currentTileRightEdgeX > 4)
         {
             CreateNewPlatform();
         }
 
-        currentTileRightEdgeX = collider.bounds.max.x;
+        currentTileRightEdgeX = collider.bounds.max.x; //þuanki collider'lý nesnenin sahnedeki en sað noktasý
     }
 
     private void CreateNewPlatform()
